@@ -31,6 +31,12 @@ app.get('/view', (req, res) => {
     });
 });
 
+app.get('/closedtickets', (req,res) => {
+    knex.select().from('completedTickets').then((results) => {
+        res.json({'data': results});
+    });
+});
+
 app.get('/employee', (req,res) => {
     let names = [];
 
