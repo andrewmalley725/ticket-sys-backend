@@ -51,4 +51,14 @@ app.post('/addemp', (req,res) => {
     }).then(() => console.log('employee added'));
 });
 
+app.post('/completed', (req,res) => {
+    id = req.body.id;
+    emp = req.body.emp;
+
+    knex('ticket').where('ticketid',id).update({
+        ticketid: id,
+        empid: knex.select('empid').from('employee').where('empusername', emp)
+    }).then(() => console.log('Record changed'));
+});
+
 app.listen(port, () => console.log('Server is running...'));
