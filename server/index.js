@@ -6,6 +6,10 @@ let app = express();
 
 var path = require("path");
 
+app.use(express.json());
+
+app.use(express.urlencoded());
+
 const knex = require('knex')({
     client: 'mysql',
     connection: {
@@ -22,9 +26,29 @@ const port = 3001;
 app.use(cors());
 
 app.get('/view', (req, res) => {
-    knex.select().from('viewTickets').then(result => {
-        res.json({'data':result});
+    knex.select().from('viewTickets').where(knex.raw('status = "Incomplete"')).then(results => {
+        res.json({'data':results});
     });
+});
+
+app.get('/employee', (req,res) => {
+    let names = [];
+
+    knex.select(knex.raw("empusername as name")).from('employee').then(results => {
+
+        for (let i of results){
+            names.push(i['name']);
+        }
+        res.json({'data':names});
+    });
+});
+
+app.post('/addemp', (req,res) => {
+    knex('employee').insert({
+        empusername: req.body.userName,
+        empfname: req.body.first,
+        emplname: req.body.last
+    }).then(() => console.log('employee added'));
 });
 
 app.listen(port, () => console.log('Server is running...'));
