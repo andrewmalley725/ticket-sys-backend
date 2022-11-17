@@ -43,6 +43,17 @@ app.get('/employee', (req,res) => {
     });
 });
 
+app.get('/customer',(req,res) => {
+    let names = [];
+
+    knex.select('username').from('user').then(results => {
+        for (let i of results){
+            names.push(i['username']);
+        }
+        res.json({'data':names});
+    });
+});
+
 app.post('/addemp', (req,res) => {
     knex('employee').insert({
         empusername: req.body.userName,
@@ -59,6 +70,21 @@ app.post('/completed', (req,res) => {
         ticketid: id,
         empid: knex.select('empid').from('employee').where('empusername', emp)
     }).then(() => console.log('Record changed'));
+});
+
+app.post('/addcust', (req,res) => {
+    knex('user').insert({
+        username: req.body.userName,
+        userfname: req.body.first,
+        userlname: req.body.last
+    }).then(() => console.log('Customer added'));
+});
+
+app.post('/addticket', (req,res) => {
+    knex('ticket').insert({
+        userid: knex.select('userid').from('user').where('username', req.body.user),
+        description: req.body.msg
+    }).then(() => console.log('Ticket added'));
 });
 
 app.listen(port, () => console.log('Server is running...'));

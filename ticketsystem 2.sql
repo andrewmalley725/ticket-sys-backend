@@ -22,7 +22,7 @@ create table employee(
 
 create table ticket(
 	ticketid int primary key auto_increment,
-    userid int references user,
+    userid int references not null user,
     empid int references employee,
     description varchar(300)
 );
