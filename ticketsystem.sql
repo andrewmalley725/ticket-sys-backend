@@ -5,6 +5,7 @@ drop table employee;
 drop table ticket;
 
 drop view viewTickets;
+drop view completedTickets;
 
 create table user(
 	userid int primary key auto_increment,
@@ -49,4 +50,11 @@ from ticket t
 left join user u on u.userid = t.userid
 left join employee e on e.empid = t.empid;
 
-select * from viewtickets
+create view 
+completedTickets
+as
+select ticketid, description, concat(userfname, ' ', userlname) as patient, 
+concat(empfname,' ', emplname) as completed_by
+from user u 
+inner join ticket t on t.userid = u.userid
+inner join employee e on e.empid = t.empid;
